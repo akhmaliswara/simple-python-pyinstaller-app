@@ -19,7 +19,12 @@ node {
         echo "Failed to process JUnit results: ${err}"
     }
 
-    stage('Deliver') {
+    stage('Manual Approval') {
+        // Add Manual Approval
+        input "Proceed with Deliver stage?"
+    }
+    
+    stage('Deploy') {
         env.VOLUME = "${pwd()}/sources:/src"
         env.IMAGE = 'cdrx/pyinstaller-linux:python2'
 
@@ -27,6 +32,9 @@ node {
             unstash('compiled-results')
             sh "docker run --rm -v ${env.VOLUME} ${env.IMAGE} 'pyinstaller -F add2vals.py'"
         }
+
+        // Delay for 1 minute
+        sleep(time: 1, unit: 'MINUTES')
 
         if (currentBuild.result == 'SUCCESS') {
             archiveArtifacts "${env.BUILD_ID}/sources/dist/add2vals"
