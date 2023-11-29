@@ -21,7 +21,7 @@ node {
 
     stage('Manual Approval') {
         // Add Manual Approval
-        input "Proceed with Deliver stage?"
+        input "Lanjutkan ke tahap Deploy?"
     }
     
     stage('Deploy') {
